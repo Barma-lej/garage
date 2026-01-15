@@ -4,6 +4,7 @@
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-3DDC84)](https://www.home-assistant.io/)
 [![License](https://img.shields.io/github/license/Barma-lej/garage)](https://github.com/Barma-lej/garage/blob/main/LICENSE)
 [![Actions Status](https://img.shields.io/github/actions/workflow/status/Barma-lej/garage/ci.yml?branch=main)](https://github.com/Barma-lej/garage/actions)
+[![Buy Me A Coffee](https://img.shields.io/badge/donate-Coffee-ff813f.svg)](https://www.buymeacoffee.com/barma)
 
 
 This repository contains the firmware and configuration to transform any Hörmann Promatic 3 garage door opener into a smart, Home Assistant-controllable device. The system uses an **ESP32 Relay x2 (ESP32-WROOM-32E)** smart relay module to relay commands to the garage door drive unit while monitoring door position through a **TOF400C-VL53L1X** time-of-flight distance sensor and closed-position detection via a 24V optocoupler.
@@ -560,3 +561,8 @@ The authors assume **no liability** for:
 - Failure of safety features
 - Unauthorized modifications
 
+---
+
+**💡 Tip:** If you like this project just buy me a cup of ☕️ or 🥤:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/white_img.png)](https://www.buymeacoffee.com/barma)
