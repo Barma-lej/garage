@@ -44,20 +44,12 @@ This repository contains the firmware and configuration to transform any Hörman
 ![Wiring Diagram](docs/Schematic_Garage_2025-12-16%20(ESP32-WROOM-32E%20Relay%20x2).svg)
 
 ```
-ESP32-WROOM-32E Pinout:
-┌─────────────────────────────────────┐
-│        ESP32 (Top View)             │
-│ CH_PD  GND  GPIO23  GPIO22  GPIO21  │  ← STATUS LED, I²C
-│ GPIO16 GPIO17 GND   GND   Vin       │  ← Relay 1 & 2
-│ GPIO32  ... (other pins)            │  ← Optocoupler
-└─────────────────────────────────────┘
-
 Connections:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-GPIO16  → JL128-60D03G01 Relay 1 (Open command)
-GPIO17  → JL128-60D03G01 Relay 2 (Ventilation command)
-GPIO21  → TOF400C I²C SDA (with 10kΩ pull-up)
-GPIO22  → TOF400C I²C SCL (with 10kΩ pull-up)
+GPIO16  → Relay 1 (Open/close command)
+GPIO17  → Relay 2 (Ventilation command)
+GPIO21  → TOF400C I²C SDA (optional with 10kΩ pull-up)
+GPIO22  → TOF400C I²C SCL (optional with 10kΩ pull-up)
 GPIO23  → LED anode (330Ω resistor to GND)
 GPIO32  → 24V Optocoupler input (INPUT_PULLUP)
 GND     → Common ground (all modules)
@@ -72,138 +64,11 @@ Relay 2 NO contacts  → Hörmann "Ventilation" impulse terminals
 24V common           → Optocoupler cathode
 ```
 
-See detailed schematics in the [docs](docs/) folder:
-- **Schematic_Garage_2025-12-16.pdf** — Full electrical schematic with part numbers
-- **Schematic_Garage_2025-12-16-ESP32-WROOM-32E-Relay-x2.jpg** — Visual wiring diagram
-
-#### Step-by-Step Assembly
-
-1. **Prepare the enclosure**
-   - Option A: 3D-print the custom enclosure from [3D Models](#3d-models)
-   - Option B: Use IP65 weatherproof enclosure with DIN rail
-   - Drill holes for sensor cable gland and power inlet
-   - Ensure adequate ventilation for heat dissipation
-
-2. **Mount ESP32-WROOM-32E**
-   - Use breadboard or custom PCB mount (fits 3D-printed housing)
-   - Ensure stable electrical connections
-   - Keep away from direct moisture exposure
-
-3. **Install relay modules**
-   - Mount two JL128-60D03G01 relays on DIN rail or 3D-printed holder
-   - Connect GPIO16 → Relay 1 coil
-   - Connect GPIO17 → Relay 2 coil
-   - Connect common GND to relay module GND
-
-4. **Install distance sensor (TOF400C)**
-   - Mount bracket on garage wall or door frame (see 3D model for mounting guide)
-   - Position perpendicular to garage door surface
-   - Ideal mounting height: 1.5–2 meters
-   - Connect I²C lines (SDA/SCL) with 10kΩ pull-up resistors to 3.3V
-
-5. **Install optocoupler**
-   - Connect to existing 24V Hörmann closed-position circuit
-   - Wire optocoupler signal output to GPIO32 (INPUT_PULLUP configuration)
-   - Verify continuity with multimeter when door is closed
-
-6. **Install status LED**
-   - Wire anode (+) through 330Ω resistor to GPIO23
-   - Wire cathode (−) to GND
-   - Test blinking during boot sequence
-
-7. **Connect to Hörmann Promatic 3**
-   - Relay 1 NO/NC → Hörmann impulse input for open/close
-   - Relay 2 NO/NC → Hörmann impulse input for ventilation
-   - Verify impulse response (door should move within 1 second)
-
-8. **Power connections**
-   - Connect 5V USB adapter to ESP32 USB port or Vin pin
-   - Connect 24V power for optocoupler circuit
-   - Verify LED indicator lights on boot
-
-9. **Verification checklist**
-   - [ ] WiFi connects (check SSID in AP list)
-   - [ ] ESPHome dashboard shows device "Online"
-   - [ ] ToF sensor distance reading appears in logs (not NAN)
-   - [ ] Optocoupler status changes when door closes
-   - [ ] Relay relay1 and relay2 click audibly when testing
-
 ---
 
 ## 3D Models
 
-The project includes 3D-printable components for cost-effective enclosure and sensor mounting.
-
-### Available Models
-
-**Location**: [`3D_model/`](3D_model/) directory
-
-#### Main Enclosure
-- **File**: `ESP32_Case_Main.stl`
-- **Purpose**: Houses ESP32-WROOM-32E and relay modules
-- **Print Settings**:
-  - **Material**: PLA or PETG (for temperature stability)
-  - **Infill**: 15–20% (structural integrity adequate)
-  - **Support**: Required on underside
-  - **Print Time**: ~6–8 hours
-  - **Dimensions**: ~120×80×60 mm
-  - **Filament**: ~50–60g
-
-#### Sensor Mount Bracket
-- **File**: `TOF_Sensor_Bracket.stl`
-- **Purpose**: Holds TOF400C perpendicular to garage door
-- **Print Settings**:
-  - **Material**: PLA or PETG
-  - **Infill**: 20–25% (higher for stress support)
-  - **Support**: Minimal (internal structures)
-  - **Print Time**: ~2–3 hours
-  - **Mounting**: Wall-mounted with M3 screws
-  - **Adjustment**: Allows ±10° angle correction
-
-#### Cable Management
-- **File**: `Cable_Organizer.stl`
-- **Purpose**: Organizes I²C and power cables inside enclosure
-- **Print Settings**:
-  - **Material**: PLA
-  - **Infill**: 10%
-  - **Print Time**: ~1 hour
-
-### Post-Print Assembly
-
-1. **Remove support material** carefully with needle-nose pliers
-2. **Sand rough edges** with 220-grit sandpaper (optional, improves aesthetics)
-3. **Insert threaded inserts** (M3) for secure screw mounting:
-   - Use soldering iron to install M3×8mm heat-set inserts
-   - 4× inserts for main case (corner mounting)
-   - 2× inserts for sensor bracket
-4. **Apply thin layer of epoxy** to cable glands for water sealing
-5. **Mount components**:
-   - Secure ESP32 to main case with M3 screws
-   - Attach relay modules to DIN rail inside case
-   - Mount sensor bracket to wall with M3×10mm screws
-
-### Material Recommendations
-
-| Material | Temperature Resistance | Cost | Durability | Recommendation |
-|----------|------------------------|------|-----------|-----------------|
-| **PLA** | 50–60°C | Low | Moderate | Good for indoor garage (best for print quality) |
-| **PETG** | 70–80°C | Medium | High | Recommended for outdoor/hot garages |
-| **ASA** | 80–100°C | High | Very High | Premium choice for extreme conditions |
-
-### Printing Tips
-
-- **First layer**: Use brim or raft for better adhesion
-- **Nozzle temperature**: PLA 200°C, PETG 235°C, ASA 240°C
-- **Bed temperature**: PLA 60°C, PETG 80°C, ASA 100°C
-- **Print speed**: 40–50 mm/s (slower = better quality)
-- **Cooling**: Disable for PETG, minimal for ASA (better layer adhesion)
-
-### Alternatives
-
-If you don't have access to a 3D printer:
-- **Shapeways** or **Craftcloud** — Commercial 3D printing services
-- **Local makerspaces** — Many offer printing services
-- **IP65 enclosure** — Standard weatherproof plastic boxes ($10–20)
+The project includes 3D-printable box in [`3D_model/`](3D_model/) directory.
 
 ---
 
@@ -228,7 +93,7 @@ If you don't have access to a 3D printer:
 ### Step-by-Step Upload
 
 1. **Prepare configuration file**
-   - Copy the provided `garage.yaml` to your Home Assistant configuration
+   - Copy the provided [`garage.yaml`](garage.yaml) to your Home Assistant configuration
    - Update GPIO pin assignments if different from your hardware
    - Edit substitution variables (friendly names, sensor calibration values)
 
@@ -246,6 +111,7 @@ If you don't have access to a 3D printer:
 
 4. **Upload Configuration**
    - In dashboard, click the device card or **"Edit"** button
+   - ⚠️ Copy `ap:` `password:` from auto-generated YAML to your `secrets.yaml` ⚠️
    - Replace the auto-generated YAML with your `garage.yaml` configuration
    - Click **"Save"**
    - ESPHome will validate the configuration
@@ -296,14 +162,19 @@ Once discovered and configured, the following entities appear:
 
 | Entity ID | Type | Function |
 |-----------|------|----------|
-| `cover.garage` (or `tor`) | Cover | Main door control with position slider (0–100%) |
-| `binary_sensor.geöffnet` | Binary Sensor | True when door is **open** (optocoupler inactive) |
-| `binary_sensor.lüftung` | Binary Sensor | True when **ventilation mode** is active |
-| `sensor.position` | Sensor | Current door position in % (0=closed, 100=open) |
-| `sensor.distanz` | Sensor | Raw ToF distance in mm |
-| `sensor.bereichsstatus` | Text Sensor | Range status (e.g., "Range Valid", "Signal Fail") |
-| `button.tor` | Button | Trigger open/close impulse |
-| `button.lüftung` | Button | Trigger ventilation/airing impulse |
+| `cover.tor_tor` (or `tor`) | Cover | Main door control with position slider (0–100%) |
+| `button.tor_tor` | Button | Trigger open/close impulse |
+| `button.tor_luftung` | Button | Trigger ventilation/airing impulse |
+| `button.tor_restart` | Button | Restart device |
+| `button.tor_safe_mode_boot` | Button | Safe mode boot |
+| `binary_sensor.tor_geoffnet` | Binary Sensor | True when door is **open** (optocoupler inactive) |
+| `binary_sensor.tor_luftung` | Binary Sensor | True when **ventilation mode** is active |
+| `sensor.tor_position` | Sensor | Current door position in % (0=closed, 100=open) |
+| `sensor.tor_distanz` | Sensor | Calibrate ToF distance in mm |
+| `sensor.tor_raw_distanz` | Sensor | Raw ToF distance in mm |
+| `sensor.tor_bereichsstatus` | Text Sensor | Range status (e.g., "Range Valid", "Signal Fail") |
+| `sensor.tor_bereichsstatuswert` | Sensor | Range status (e.g., "1", "2") |
+| `update.tor_firmware` | Update sensor | True when update is available |
 
 ### Control Methods
 
@@ -380,7 +251,7 @@ mosquitto_pub -h homeassistant.local -t home/garage/command -m "VENTILATE"
 
 ### ESPHome YAML Configuration (garage.yaml)
 
-The project includes a comprehensive `garage.yaml` configuration file. Key sections:
+The project includes a comprehensive [`garage.yaml`](garage.yaml) configuration file. Key sections:
 
 #### 1. Substitutions (Customizable Variables)
 ```yaml
@@ -588,23 +459,6 @@ text_sensor:
   - Check Home Assistant logs: Settings → System → Logs
   - Force entity refresh: Developer Tools → States → Restart device
 
-### High Power Consumption
-- **Symptom**: USB adapter getting hot, high idle current
-- **Solution**:
-  - Disable unnecessary debug logging: `logger: level: INFO`
-  - Increase sensor update interval: `update_interval: 2s`
-  - Disable unused sensors in YAML: `disabled_by_default: true`
-  - Check for relay coil power draw (ensure correct voltage)
-
-### 3D-Printed Case Issues
-- **Symptom**: Case cracking, parts not fitting
-- **Solution**:
-  - Check infill percentage (should be 15–25%)
-  - Verify filament extrusion width is calibrated correctly
-  - Use PETG instead of PLA for better impact resistance
-  - Ensure heat-set inserts are properly installed (use soldering iron at 240°C)
-  - Sand rough surfaces to improve fitting
-
 ---
 
 ## Contributing
@@ -641,15 +495,6 @@ Contributions are welcome! Please follow these guidelines:
    - Include before/after testing results
    - Reference any related issues
 
-### Areas for Improvement
-- **Multi-sensor fusion**: Add accelerometer for motion detection
-- **MQTT integration**: Full MQTT publish/subscribe support
-- **Additional door models**: Support for Chamberlain, LiftMaster, Genie openers
-- **Machine learning**: Predict door failure based on motor current
-- **Dashboard**: Custom ESPHome web UI for local control
-- **Safety features**: Obstacle detection with servo-controlled stops
-- **Energy monitoring**: Track relay activation frequency and patterns
-
 ### Testing Requirements
 Before submitting a PR:
 - [ ] Verify door opens and closes correctly
@@ -661,46 +506,11 @@ Before submitting a PR:
 
 ---
 
-## File Structure
-
-```
-garage/
-├── README.md                    # This file
-├── garage.yaml                  # Main ESPHome configuration
-├── secrets.yaml                 # WiFi & authentication credentials (not in repo)
-├── 3D_model/                    # 3D-printable components
-│   ├── ESP32_Case_Main.stl
-│   ├── TOF_Sensor_Bracket.stl
-│   ├── Cable_Organizer.stl
-│   └── README.md               # 3D printing guide
-├── docs/                        # Schematics and documentation
-│   ├── Schematic_Garage_2025-12-16.pdf
-│   ├── Schematic_Garage_2025-12-16-ESP32-WROOM-32E-Relay-x2.jpg
-│   └── Wiring_Guide.md
-└── LICENSE                      # MIT License
-```
-
----
-
 ## License
 
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) file for details.
 
 You are free to use, modify, and distribute this software for personal and commercial purposes, with attribution to the original author (Barma-lej).
-
----
-
-## Project Information
-
-| Aspect | Details |
-|--------|---------|
-| **Project Name** | Smart Garage Door Controller (Garagenöffner) |
-| **Author** | Barma-lej |
-| **Version** | 2025.12.0 |
-| **Last Updated** | January 15, 2026 |
-| **Hardware Target** | ESP32-WROOM-32E with Hörmann Promatic 3 |
-| **ESPHome Version** | 2024.12.x or later |
-| **Home Assistant Version** | 2024.12.x or later |
 
 ---
 
@@ -710,7 +520,7 @@ You are free to use, modify, and distribute this software for personal and comme
 - **Discussions**: [GitHub Discussions](https://github.com/Barma-lej/garage/discussions) for Q&A
 - **ESPHome Docs**: [Official Documentation](https://esphome.io)
 - **Home Assistant Community**: [Community Forums](https://community.home-assistant.io)
-- **Hörmann Support**: [Official Website](https://www.hoermann.de)
+- **Hörmann Promatic 3 Manual**: [Manual DE](docs/hoermann-promatic-3-anleitung.pdf)
 
 ---
 
