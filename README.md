@@ -3,7 +3,6 @@
 [![ESPHome](https://img.shields.io/badge/ESPHome-ready-blue)](https://esphome.io/)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-compatible-3DDC84)](https://www.home-assistant.io/)
 [![License](https://img.shields.io/github/license/Barma-lej/garage)](https://github.com/Barma-lej/garage/blob/main/LICENSE)
-[![Actions Status](https://img.shields.io/github/actions/workflow/status/Barma-lej/garage/ci.yml?branch=main)](https://github.com/Barma-lej/garage/actions)
 [![Buy Me A Coffee](https://img.shields.io/badge/donate-Coffee-ff813f.svg)](https://www.buymeacoffee.com/barma)
 
 
